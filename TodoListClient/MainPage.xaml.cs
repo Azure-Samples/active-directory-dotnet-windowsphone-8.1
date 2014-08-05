@@ -93,7 +93,7 @@ namespace TodoListClient
         public async void ContinueWebAuthentication(WebAuthenticationBrokerContinuationEventArgs args)
         {
             // pass the authentication interaction results to ADAL, which will conclude the token acquisition operation and invoke the callback specified in AcquireTokenAndContinue.
-            await authContext.ContinueAcquireToken(args);
+            await authContext.ContinueAcquireTokenAsync(args);
         }
         #endregion
         
@@ -107,7 +107,7 @@ namespace TodoListClient
         public async void GetTodoList(AuthenticationResult result)
         {
 
-            if (result.Status == AuthenticationStatus.Succeeded)
+            if (result.Status == AuthenticationStatus.Success)
             {
                 //
                 // Add the access token to the Authorization Header of the call to the To Do list service, and call the service.
@@ -133,7 +133,7 @@ namespace TodoListClient
                         // If the To Do list service returns access denied, clear the token cache and have the user sign-in again.
                         MessageDialog dialog = new MessageDialog("Sorry, you don't have access to the To Do Service.  Please sign-in again.");
                         await dialog.ShowAsync();
-                        authContext.TokenCacheStore.Clear();
+                        authContext.TokenCache.Clear();
                     }
                     else
                     {
@@ -153,7 +153,7 @@ namespace TodoListClient
         public async void AddTodo(AuthenticationResult result)
         {
 
-            if (result.Status == AuthenticationStatus.Succeeded)
+            if (result.Status == AuthenticationStatus.Success)
             {
                 //
                 // Add the access token to the Authorization Header of the call to the To Do list service, and call the service.
@@ -177,7 +177,7 @@ namespace TodoListClient
                         // If the To Do list service returns access denied, clear the token cache and have the user sign-in again.
                         MessageDialog dialog = new MessageDialog("Sorry, you don't have access to the To Do Service.  Please sign-in again.");
                         await dialog.ShowAsync();
-                        authContext.TokenCacheStore.Clear();
+                        authContext.TokenCache.Clear();
                     }
                     else
                     {
@@ -200,7 +200,7 @@ namespace TodoListClient
         private void RemoveAppBarButton_Click(object sender, RoutedEventArgs e)
         {
              // Clear session state from the token cache.
-            authContext.TokenCacheStore.Clear();
+            authContext.TokenCache.Clear();
 
             // Reset UI elements
             TodoList.ItemsSource = null;
@@ -212,8 +212,8 @@ namespace TodoListClient
         {
             // Try to get a token without triggering any user prompt. 
             // ADAL will check whether the requested token is in the cache or can be obtained without user itneraction (e.g. via a refresh token).
-            AuthenticationResult result = await authContext.AcquireTokenSilentlyAsync(todoListResourceId, clientId);
-            if (result != null && result.Status == AuthenticationStatus.Succeeded)
+            AuthenticationResult result = await authContext.AcquireTokenSilentAsync(todoListResourceId, clientId);
+            if (result != null && result.Status == AuthenticationStatus.Success)
             {
                 // A token was successfully retrieved. Get the To Do list for the current user
                 GetTodoList(result);
@@ -232,8 +232,8 @@ namespace TodoListClient
         {
             // Try to get a token without triggering any user prompt. 
             // ADAL will check whether the requested token is in the cache or can be obtained without user itneraction (e.g. via a refresh token).
-            AuthenticationResult result = await authContext.AcquireTokenSilentlyAsync(todoListResourceId, clientId);
-            if (result != null && result.Status == AuthenticationStatus.Succeeded)
+            AuthenticationResult result = await authContext.AcquireTokenSilentAsync(todoListResourceId, clientId);
+            if (result != null && result.Status == AuthenticationStatus.Success)
             {
                 // A token was successfully retrieved. Post the new To Do item
                 AddTodo(result);

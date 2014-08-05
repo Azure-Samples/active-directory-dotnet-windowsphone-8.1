@@ -1,18 +1,3 @@
-//----------------------------------------------------------------------------------------------
-//    Copyright 2014 Microsoft Corporation
-//
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
-//----------------------------------------------------------------------------------------------
 using System;
 using System.Globalization;
 using System.Linq;
@@ -20,17 +5,20 @@ using System.Reflection;
 using System.Web.Http.Controllers;
 using System.Web.Http.Description;
 using System.Xml.XPath;
+using TodoListService.Areas.HelpPage.ModelDescriptions;
 
 namespace TodoListService.Areas.HelpPage
 {
     /// <summary>
     /// A custom <see cref="IDocumentationProvider"/> that reads the API documentation from an XML documentation file.
     /// </summary>
-    public class XmlDocumentationProvider : IDocumentationProvider
+    public class XmlDocumentationProvider : IDocumentationProvider, IModelDocumentationProvider
     {
         private XPathNavigator _documentNavigator;
         private const string TypeExpression = "/doc/members/member[@name='T:{0}']";
         private const string MethodExpression = "/doc/members/member[@name='M:{0}']";
+        private const string PropertyExpression = "/doc/members/member[@name='P:{0}']";
+        private const string FieldExpression = "/doc/members/member[@name='F:{0}']";
         private const string ParameterExpression = "param[@name='{0}']";
 
         /// <summary>
@@ -49,7 +37,7 @@ namespace TodoListService.Areas.HelpPage
 
         public string GetDocumentation(HttpControllerDescriptor controllerDescriptor)
         {
-            XPathNavigator typeNode = GetTypeNode(controllerDescriptor);
+            XPathNavigator typeNode = GetTypeNode(controllerDescriptor.ControllerType);
             return GetTagValue(typeNode, "summary");
         }
 
@@ -85,6 +73,21 @@ namespace TodoListService.Areas.HelpPage
             return GetTagValue(methodNode, "returns");
         }
 
+        public string GetDocumentation(MemberInfo member)
+        {
+            string memberName = String.Format(CultureInfo.InvariantCulture, "{0}.{1}", GetTypeName(member.DeclaringType), member.Name);
+            string expression = member.MemberType == MemberTypes.Field ? FieldExpression : PropertyExpression;
+            string selectExpression = String.Format(CultureInfo.InvariantCulture, expression, memberName);
+            XPathNavigator propertyNode = _documentNavigator.SelectSingleNode(selectExpression);
+            return GetTagValue(propertyNode, "summary");
+        }
+
+        public string GetDocumentation(Type type)
+        {
+            XPathNavigator typeNode = GetTypeNode(type);
+            return GetTagValue(typeNode, "summary");
+        }
+
         private XPathNavigator GetMethodNode(HttpActionDescriptor actionDescriptor)
         {
             ReflectedHttpActionDescriptor reflectedActionDescriptor = actionDescriptor as ReflectedHttpActionDescriptor;
@@ -99,7 +102,7 @@ namespace TodoListService.Areas.HelpPage
 
         private static string GetMemberName(MethodInfo method)
         {
-            string name = String.Format(CultureInfo.InvariantCulture, "{0}.{1}", method.DeclaringType.FullName, method.Name);
+            string name = String.Format(CultureInfo.InvariantCulture, "{0}.{1}", GetTypeName(method.DeclaringType), method.Name);
             ParameterInfo[] parameters = method.GetParameters();
             if (parameters.Length != 0)
             {
@@ -124,35 +127,35 @@ namespace TodoListService.Areas.HelpPage
             return null;
         }
 
+        private XPathNavigator GetTypeNode(Type type)
+        {
+            string controllerTypeName = GetTypeName(type);
+            string selectExpression = String.Format(CultureInfo.InvariantCulture, TypeExpression, controllerTypeName);
+            return _documentNavigator.SelectSingleNode(selectExpression);
+        }
+
         private static string GetTypeName(Type type)
         {
+            string name = type.FullName;
             if (type.IsGenericType)
             {
                 // Format the generic type name to something like: Generic{System.Int32,System.String}
                 Type genericType = type.GetGenericTypeDefinition();
                 Type[] genericArguments = type.GetGenericArguments();
-                string typeName = genericType.FullName;
+                string genericTypeName = genericType.FullName;
 
                 // Trim the generic parameter counts from the name
-                typeName = typeName.Substring(0, typeName.IndexOf('`'));
+                genericTypeName = genericTypeName.Substring(0, genericTypeName.IndexOf('`'));
                 string[] argumentTypeNames = genericArguments.Select(t => GetTypeName(t)).ToArray();
-                return String.Format(CultureInfo.InvariantCulture, "{0}{{{1}}}", typeName, String.Join(",", argumentTypeNames));
+                name = String.Format(CultureInfo.InvariantCulture, "{0}{{{1}}}", genericTypeName, String.Join(",", argumentTypeNames));
             }
-
-            return type.FullName;
-        }
-
-        private XPathNavigator GetTypeNode(HttpControllerDescriptor controllerDescriptor)
-        {
-            Type controllerType = controllerDescriptor.ControllerType;
-            string controllerTypeName = controllerType.FullName;
-            if (controllerType.IsNested)
+            if (type.IsNested)
             {
                 // Changing the nested type name from OuterType+InnerType to OuterType.InnerType to match the XML documentation syntax.
-                controllerTypeName = controllerTypeName.Replace("+", ".");
+                name = name.Replace("+", ".");
             }
-            string selectExpression = String.Format(CultureInfo.InvariantCulture, TypeExpression, controllerTypeName);
-            return _documentNavigator.SelectSingleNode(selectExpression);
+
+            return name;
         }
     }
 }
