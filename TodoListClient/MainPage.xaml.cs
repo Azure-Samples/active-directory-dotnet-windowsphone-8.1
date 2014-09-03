@@ -64,6 +64,7 @@ namespace TodoListClient
 
         private HttpClient httpClient = new HttpClient();
         private AuthenticationContext authContext = null;
+        private Uri redirectURI = null;
 
 #endregion
         public MainPage()
@@ -81,7 +82,7 @@ namespace TodoListClient
             //      in AAD, set a breakpoint on the next line, run the app, and copy the string value of the URI.
             //      This is the only purposes of this line of code, it has no functional purpose in the application.
             //
-            Uri redirectURI = Windows.Security.Authentication.Web.WebAuthenticationBroker.GetCurrentApplicationCallbackUri();
+            redirectURI = Windows.Security.Authentication.Web.WebAuthenticationBroker.GetCurrentApplicationCallbackUri();
 
             // ADAL for Windows Phone 8.1 builds AuthenticationContext instances throuhg a factory, which performs authority validation at creation time
             authContext = AuthenticationContext.CreateAsync(authority).GetResults();
@@ -222,7 +223,7 @@ namespace TodoListClient
             {
                 // Acquiring a token without user interaction was not possible. 
                 // Trigger an authentication experience and specify that once a token has been obtained the GetTodoList method should be called
-                authContext.AcquireTokenAndContinue(todoListResourceId, clientId, GetTodoList);
+                authContext.AcquireTokenAndContinue(todoListResourceId, clientId, redirectURI, GetTodoList);
             }
         }
         #endregion
@@ -242,7 +243,7 @@ namespace TodoListClient
             {
                 // Acquiring a token without user interaction was not possible. 
                 // Trigger an authentication experience and specify that once a token has been obtained the AddTodo method should be called
-                authContext.AcquireTokenAndContinue(todoListResourceId, clientId, AddTodo);
+                authContext.AcquireTokenAndContinue(todoListResourceId, clientId, redirectURI, AddTodo);
             }
         }
     }
