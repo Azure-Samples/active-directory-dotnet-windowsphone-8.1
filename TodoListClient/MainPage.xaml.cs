@@ -90,7 +90,7 @@ namespace TodoListClient
 
         #region IWebAuthenticationContinuable implementation
         
-        // This method is automatically invoked when the application is reactivated after an authentication interaction throuhg WebAuthenticationBroker.        
+        // This method is automatically invoked when the application is reactivated after an authentication interaction through WebAuthenticationBroker.        
         public async void ContinueWebAuthentication(WebAuthenticationBrokerContinuationEventArgs args)
         {
             // pass the authentication interaction results to ADAL, which will conclude the token acquisition operation and invoke the callback specified in AcquireTokenAndContinue.
