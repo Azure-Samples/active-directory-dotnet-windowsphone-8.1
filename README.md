@@ -9,7 +9,7 @@ Integrating a Windows Phone application with Azure AD
 
 This sample demonstrates a Windows Store application for Windows Phone 8.1 calling a web API that is secured using Azure AD. The application uses the Active Directory Authentication Library (ADAL) to obtain a JWT access token through the OAuth 2.0 protocol. The access token is sent to the web API to authenticate the user.
 
-> NOTE: This sample uses version 2 of the ADAL library.  Version 3 of ADAL is available, but only support Windows Universal applications, Windows Phone 8.1.  For an enquivalent Windows Universal sample, go [here](https://github.com/azure-samples/active-directory-dotnet-windows-store).
+> NOTE: This sample uses version 2 of the ADAL library.  Version 3 of ADAL is available, but does not support Windows Phone 8.1.  For an enquivalent Windows Universal sample, go [here](https://github.com/azure-samples/active-directory-dotnet-windows-store).
 
 For more information about how the protocols work in this scenario and other scenarios, see [Authentication Scenarios for Azure AD](http://go.microsoft.com/fwlink/?LinkId=394414).
 
