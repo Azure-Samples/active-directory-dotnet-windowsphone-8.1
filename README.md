@@ -41,17 +41,13 @@ There are two projects in this sample.  Each needs to be separately registered i
 
 #### Register the TodoListService web API
 
-1. Sign in to the [Azure management portal](https://manage.windowsazure.com).
-2. Click on Active Directory in the left hand nav.
-3. Click the directory tenant where you wish to register the sample application.
-4. Click the Applications tab.
-5. In the drawer, click Add.
-6. Click "Add an application my organization is developing".
-7. Enter a friendly name for the application, for example "TodoListService", select "Web Application and/or Web API", and click next.
-8. For the sign-on URL, enter the base URL for the sample, which is by default `https://localhost:44321`.
-9. For the App ID URI, enter `https://<your_tenant_name>/TodoListService`, replacing `<your_tenant_name>` with the name of your Azure AD tenant.  Click OK to complete the registration.
-10. While still in the Azure portal, click the Configure tab of your application.
-11. Find the Client ID value and copy it aside, you will need this later when configuring your application.
+1. Sign in to the [Azure portal](https://portal.azure.com).
+2. On the top bar, click on your account and under the **Directory** list, choose the Active Directory tenant where you wish to register your application.
+2. Click on **More Services** in the left hand nav, and choose **Azure Active Directory**.
+3. Click on **Registered Applications** and choose **Add**.
+4. Enter a friendly name for the application, for example 'TodoListService' and select 'Web Application and/or Web API' as the Application Type. For the sign-on URL, enter the base URL for the sample, which is by default `https://localhost:44321`. Click on **Create** to create the application.
+5. While still in the Azure portal, choose your application, click on **Settings** and choose **Properties**.
+6. Find the Application ID value and copy it to the clipboard.
 
 #### Find the TodoListClient app's redirect URI
 
@@ -77,17 +73,14 @@ ms-app://s-1-15-2-2123189467-1366327299-2057240504-936110431-2588729968-14545362
 
 #### Register the TodoListClient app
 
-1. Sign in to the [Azure management portal](https://manage.windowsazure.com).
-2. Click on Active Directory in the left hand nav.
-3. Click the directory tenant where you wish to register the sample application.
-4. Click the Applications tab.
-5. In the drawer, click Add.
-6. Click "Add an application my organization is developing".
-7. Enter a friendly name for the application, for example "TodoListClient-WindowsPhone", select "Native Client Application", and click next.
-8. Enter the Redirect URI value that you obtained during the previous step.  Click finish.
-9. Click the Configure tab of the application.
-10. Find the Client ID value and copy it aside, you will need this later when configuring your application.
-11. In "Permissions to Other Applications", click "Add Application."  Select "Other" in the "Show" dropdown, and click the upper check mark.  Locate & click on the TodoListService, and click the bottom check mark to add the application.  Select "Access TodoListService" from the "Delegated Permissions" dropdown, and save the configuration.
+1. Sign in to the [Azure portal](https://portal.azure.com).
+2. On the top bar, click on your account and under the **Directory** list, choose the Active Directory tenant where you wish to register your application.
+2. Click on **More Services** in the left hand nav, and choose **Azure Active Directory**.
+3. Click on **Registered Applications** and choose **Add**.
+4. Enter a friendly name for the application, for example 'TodoListClient-WindowsPhone' and select 'Native' as the Application Type. Enter the Redirect URI value that you obtained during the previous step. Click on **Create** to create the application.
+5. While still in the Azure portal, choose your application, click on **Settings** and choose **Properties**.
+6. Find the Application ID value and copy it to the clipboard.
+7. Configure Permissions for your application - in the Settings menu, choose the 'Required permissions' section, click on **Add**, then **Select an API**, and type 'TodoListService' in the textbox. Then, click on  **Select Permissions** and select 'Access TodoListService'.
 
 ### Step 4:  Configure the sample to use your Azure AD tenant
 
@@ -97,13 +90,13 @@ ms-app://s-1-15-2-2123189467-1366327299-2057240504-936110431-2588729968-14545362
 2. Open the `web.config` file.
 3. Find the app key `ida:Tenant` and replace the value with your AAD tenant name.
 4. Find the app key `ida:Audience` and replace the value with the App ID URI you registered earlier, for example `https://<your_tenant_name>/TodoListService`.
-5. Find the app key `ida:ClientId` and replace the value with the Client ID for the TodoListService from the Azure portal.
+5. Find the app key `ida:ClientId` and replace the value with the Application ID for the TodoListService from the Azure portal.
 
 #### Configure the TodoListClient project
 
 1. Open `MainPage.xaml.cs'.
 2. Find the declaration of `tenant` and replace the value with the name of your Azure AD tenant.
-3. Find the declaration of `clientId` and replace the value with the Client ID from the Azure portal.
+3. Find the declaration of `clientId` and replace the value with the Application ID from the Azure portal.
 4. Find the declaration of `todoListResourceId` and `todoListBaseAddress` and ensure their values are set properly for your TodoListService project.
 
 ### Step 5:  Trust the IIS Express SSL certificate from the Windows Phone Emulator
