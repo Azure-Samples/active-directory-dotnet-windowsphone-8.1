@@ -20,10 +20,9 @@ To run this sample you will need:
 - Windows 8.1 or higher
 - A machine supporting Client Hyper-V and Second Level Address Translation (SLAT)
 - An Internet connection
-- An Azure subscription (a free trial is sufficient)
 - A Microsoft account
-
-Every Azure subscription has an associated Azure Active Directory tenant.  If you don't already have an Azure subscription, you can get a free subscription by signing up at [https://azure.microsoft.com](https://azure.microsoft.com).  All of the Azure AD features used by this sample are available free of charge.
+- An Azure Active Directory (Azure AD) tenant. For more information on how to get an Azure AD tenant, please see [How to get an Azure AD tenant](https://azure.microsoft.com/en-us/documentation/articles/active-directory-howto-tenant/) 
+- A user account in your Azure AD tenant. This sample will not work with a Microsoft account, so if you signed in to the Azure portal with a Microsoft account and have never created a user account in your directory before, you need to do that now.
 
 ### Step 1:  Clone or download this repository
 
@@ -31,11 +30,7 @@ From your shell or command line:
 
 `git clone https://github.com/Azure-Samples/active-directory-dotnet-windowsphone-8.1.git`
 
-### Step 2:  Create a user account in your Azure Active Directory tenant
-
-If you already have a user account in your Azure Active Directory tenant, you can skip to the next step.  This sample will not work with a Microsoft account, so if you signed in to the Azure portal with a Microsoft account and have never created a user account in your directory before, you need to do that now.  If you create an account and want to use it to sign-in to the Azure portal, don't forget to add the user account as a co-administrator of your Azure subscription.
-
-### Step 3:  Register the sample with your Azure Active Directory tenant
+### Step 2:  Register the sample with your Azure Active Directory tenant
 
 There are two projects in this sample.  Each needs to be separately registered in your Azure AD tenant.
 
@@ -82,7 +77,7 @@ ms-app://s-1-15-2-2123189467-1366327299-2057240504-936110431-2588729968-14545362
 6. Find the Application ID value and copy it to the clipboard.
 7. Configure Permissions for your application - in the Settings menu, choose the 'Required permissions' section, click on **Add**, then **Select an API**, and type 'TodoListService' in the textbox. Then, click on  **Select Permissions** and select 'Access TodoListService'.
 
-### Step 4:  Configure the sample to use your Azure AD tenant
+### Step 3:  Configure the sample to use your Azure AD tenant
 
 #### Configure the TodoListService project
 
@@ -99,7 +94,7 @@ ms-app://s-1-15-2-2123189467-1366327299-2057240504-936110431-2588729968-14545362
 3. Find the declaration of `clientId` and replace the value with the Application ID from the Azure portal.
 4. Find the declaration of `todoListResourceId` and `todoListBaseAddress` and ensure their values are set properly for your TodoListService project.
 
-### Step 5:  Trust the IIS Express SSL certificate from the Windows Phone Emulator
+### Step 4:  Trust the IIS Express SSL certificate from the Windows Phone Emulator
 
 Since the web API is SSL protected, the client of the API will refuse the SSL connection to the web API unless it trusts the API's SSL certificate.  Use the following steps to add the IIS Express development certificate in the Windows Phone emulator. You will need to repeat the import operation every time you restart the emulator.  If you fail to do this step, calls to the TodoListService will always fail with a 404 code.
 > Note: if you want to avoid having to repeat this task every time, you can deploy the web API to a host which uses an SSL certificate that the emulator already trusts. An Azure Web Site is a good example.
